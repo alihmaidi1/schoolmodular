@@ -1,0 +1,11 @@
+./school.Api/Api/appsettings.Development.json
+school.Api/Api/appsettings.Development.json
+**/*appsettings*.json
+[Bb]in/
+[Oo]bj/
+.vs/
+.idea
+.vscode
+/Shared/RealEstate.Shared/CQRS/
+
+.env
