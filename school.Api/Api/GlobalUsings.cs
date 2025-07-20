@@ -1,0 +1,9 @@
+global using Api.JwtConfiguration;
+global using Api.Middleware;
+global using Identity.Application;
+global using Identity.infrastructure;
+global using Notification;
+global using Serilog;
+global using Shared.Application;
+global using Shared.Infrastructure;
+global using Common;

@@ -1,0 +1,49 @@
+# Name of the workflow as it appears in GitHub Actions UI
+name: my Food CI
+
+# Define when this workflow will run
+on:
+  workflow_dispatch: # Allow manual triggering from GitHub UI
+  pull_request:
+    branches:
+      - master # Run automatically when code is pushed to main branch
+
+# Environment variables used throughout the workflow
+env:
+  # AZURE_WEBAPP_NAME: time-service
+  # AZURE_WEBAPP_PACKAGE_PATH: './Time.Api/publish'
+  DOTNET_VERSION: '9.x'
+  SOLUTION_PATH: 'myfood.sln'
+  API_PROJECT_PATH: './myfood.Api/Api'
+  PUBLISH_DIR: './publish'
+
+# Define the separate jobs that make up this workflow
+jobs:
+  # First job: build and test the application
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest # Use Ubuntu runner for this job
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore
+        run: dotnet restore ${{ env.SOLUTION_PATH }}
+
+      - name: Build
+        run: dotnet build ${{ env.SOLUTION_PATH }}
+             --configuration Release
+             --no-restore
+
+      - name: Test
+        run: dotnet test ${{ env.SOLUTION_PATH }}
+          --configuration Release
+          --no-restore
+          --no-build
+          --verbosity normal
+      

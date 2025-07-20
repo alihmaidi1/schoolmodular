@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+
+
+    <ItemGroup>
+      <Folder Include="Auth\Admin\" />
+      <Folder Include="Auth\Cooker\" />
+      <Folder Include="Auth\User\Command\Logout\" />
+      <Folder Include="Auth\User\Query\" />
+    </ItemGroup>
+
+
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\school.Shared\Shared.Application\Shared.Application.csproj" />
+      <ProjectReference Include="..\Identity.Domain\Identity.Domain.csproj" />
+    </ItemGroup>
+
+</Project>

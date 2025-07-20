@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Folder Include="Data\" />
+      <Folder Include="Hubs\" />
+      <Folder Include="Models\" />
+      <Folder Include="Services\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="9.0.6" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\school.Shared\Shared.Application\Shared.Application.csproj" />
+      <ProjectReference Include="..\..\..\school.Shared\Shared.Infrastructure\Shared.Infrastructure.csproj" />
+    </ItemGroup>
+
+</Project>

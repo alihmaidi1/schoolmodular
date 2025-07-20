@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  myFoodApi:
+    image: myfoodapi
+    build:
+      context: .
+      dockerfile: myfood.Api/Api/Dockerfile
+    networks:
+      - myFoodDb_network
+      - myFood_network
+    
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1G
+        reservations:
+          cpus: "0.5"
+          memory: 500M
+    labels:
+      - "description=My Food API Service"
+  
+  
+  myFood_db:
+    image: postgres:alpine
+    networks:
+      - myFoodDb_network
+    
+    deploy:
+      resources:
+        limits:
+          cpus: "1.5"
+          memory: 2G
+        reservations:
+          cpus: "0.8"
+          memory: 800M
+    
+    labels:
+      - "description=My FoodDb Service"
+  
+  myFood_nginx:
+    image: nginx:alpine
+    networks:
+      - myFood_network
+    deploy:
+      resources:
+        limits:
+          cpus: "0.8"
+          memory: 800M
+        reservations:
+          cpus: "0.5"
+          memory: 500M
+    labels:
+      - "description=My FoodDb Reverse Proxy"
+  
+  
+
+
+
+
+
+volumes:
+  myFood_db:
+  webroot:
+
+networks:
+  myFoodDb_network:
+    driver: bridge
+    
+  myFood_network:
+    driver: bridge
