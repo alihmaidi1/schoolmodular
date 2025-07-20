@@ -1,0 +1,70 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "ConnectionStrings": {
+    "DefaultConnection": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  },
+  "Jwt": {
+    "key": "xxxxxxxxxxxxxxxxxxxxxxxxx",
+    "Issuer": "school",
+    "Audience": "school",
+    "DurationInMinute": 999999
+  },
+  "Twilio": {
+    "AccountSID": "xxxxxxxxxx",
+    "AuthToken": "xxxxxxxxxxxxxxxx",
+    "TwilioPhoneNumber": "xxxxxxxxxxxxxxxxxx"
+  },
+  "WhatsApp": {
+    "AccessToken": "xxxxxxxxx",
+    "PhoneNumberId": "xxxxxxxxxxxxxxx",
+    "BaseUrl": "https://graph.facebook.com/v19.0/"
+  },
+  "Email": {
+    "From": "alihmaidi095@gmail.com",
+    "SmtpServer": "smtp.gmail.com",
+    "Port": 587,
+    "Username": "alihmaidi095@gmail.com",
+    "Password": "xxxxxxxxxx"
+  },
+  "AwsS3": {
+    "AccessKey": "xxxxxxxxx",
+    "SecretKey": "xxxxxxxxxxxxx",
+    "Region": "ap-southeast-2",
+    "BucketName": "alihmaidischool",
+    "ImageContainer": "Temp",
+    "VideoContainer": "TempVideo",
+    "PresignedUrlExpiration": "900"
+  },
+  "AllowedHosts": "*",
+  "Serilog": {
+    "Using": [ "Serilog.Sinks.Console", "Serilog.Sinks.Seq" ],
+    "MinimumLevel": {
+      "Default": "Information",
+      "Override": {
+        "Microsoft": "Information",
+        "System": "Warning"
+      }
+    },
+    "WriteTo": [
+      {
+        "Name": "Console"
+      },
+      {
+        "Name": "Seq",
+        "Args": {
+          "serverUrl": "http://localhost:5341"
+        }
+      }
+    ],
+    "Enrich": [ "FromLogContext", "WithMachineName", "WithProcessId", "WithThreadId" ],
+    "Properties": {
+      "Application": "school ASP.NET Core App",
+      "Environment": "Production"
+    }
+  }
+}
