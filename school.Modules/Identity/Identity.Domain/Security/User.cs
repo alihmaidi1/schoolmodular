@@ -44,16 +44,16 @@ public class User: IdentityUser<Guid>, IAggregate
 
 
 
-    public Result SetForgetCode(string code,int forgetMinute)
+    public TResult<bool> SetForgetCode(string code,int forgetMinute)
     {
         if (forgetMinute<=0)
         {
-            return Result.InternalError<object>(Error.Internal("forget minute must be greater than zero"));
+            return Result.InternalError<bool>(Error.Internal("forget minute must be greater than zero"));
         }
         ForgetCode=code;
         ForgetDate=DateTime.UtcNow.AddMinutes(forgetMinute);
         RaiseDomainEvent(new SendEmailDomainEvent(Email!,$"your reset code is {code} and it will after ${forgetMinute} minutes Expired."));
-        return Result.Success<object>();
+        return Result.Success<bool>();
         
     }
 
