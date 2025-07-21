@@ -13,8 +13,8 @@ env:
   # AZURE_WEBAPP_NAME: time-service
   # AZURE_WEBAPP_PACKAGE_PATH: './Time.Api/publish'
   DOTNET_VERSION: '9.x'
-  SOLUTION_PATH: 'myfood.sln'
-  API_PROJECT_PATH: './myfood.Api/Api'
+  SOLUTION_PATH: 'school.sln'
+  API_PROJECT_PATH: './school.Api/Api'
   PUBLISH_DIR: './publish'
 
 # Define the separate jobs that make up this workflow
