@@ -17,15 +17,15 @@ public class Result
             throw new InvalidOperationException("Failed results must contain an error");
         }
 
-        IsSuccess = isSuccess;
-        Error = error;
-        StatusCode = statusCode;
+        this.isSuccess = isSuccess;
+        this.error = error;
+        this.statusCode = statusCode;
     }
 
-    public bool IsSuccess { get; }
-    public HttpStatusCode StatusCode { get; }
-    public bool IsFailure => !IsSuccess;
-    public Error? Error { get; }
+    public bool isSuccess { get; }
+    public HttpStatusCode statusCode { get; }
+    public bool isFailure => !isSuccess;
+    public Error? error { get; }
 
     // Success cases
     public static TResult<TValue> Success<TValue>(TValue value) => 
@@ -60,26 +60,26 @@ public static class ResultExtensions
 {
     public static IResult ToActionResult<TValue>(this TResult<TValue> result)
     {
-        return result.IsSuccess
+        return result.isSuccess
             ? Results.Ok(result)
-            : result.StatusCode switch
+            : result.statusCode switch
             {
                 HttpStatusCode.NotFound => Results.NotFound(result),
                 HttpStatusCode.UnprocessableContent => Results.UnprocessableEntity(result),
                 HttpStatusCode.Conflict => Results.Conflict(result),
-                _ => Results.StatusCode((int)result.StatusCode)
+                _ => Results.StatusCode((int)result.statusCode)
             };
     }
     public static IResult ToActionResult(this Result result)
     {
-        return result.IsSuccess
+        return result.isSuccess
             ? Results.Ok(result)
-            : result.StatusCode switch
+            : result.statusCode switch
             {
                 HttpStatusCode.NotFound => Results.NotFound(result),
                 HttpStatusCode.UnprocessableContent => Results.UnprocessableEntity(result),
                 HttpStatusCode.Conflict => Results.Conflict(result),
-                _ => Results.StatusCode((int)result.StatusCode)
+                _ => Results.StatusCode((int)result.statusCode)
             };
     }
 }
