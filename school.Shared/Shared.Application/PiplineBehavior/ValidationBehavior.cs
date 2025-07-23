@@ -26,8 +26,8 @@ public class ValidationBehavior<TRequest,TResponse>: IPipelineBehavior<TRequest,
          {
              return await next();
          }
-         var result = Result.ValidationFailure<object>(Error.ValidationFailures(validationFailures)).ToActionResult();
-         return (TResponse)result;
+
+         throw new ValidationException(validationFailures);
     }
     
     

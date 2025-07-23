@@ -18,7 +18,7 @@ public class UnitOfWorkBehavior<TRequest,TResponse>: IPipelineBehavior<TRequest,
             new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted },
             TransactionScopeAsyncFlowOption.Enabled);
         var result =await next();
-        if (result.IsSuccess)
+        if (result.isSuccess)
         {
             transactionScope.Complete();
         }

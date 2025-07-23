@@ -30,7 +30,7 @@ internal sealed class ForgetPasswordCommandHandler: ICommandHandler<ForgetPasswo
             return Result.ValidationFailure<bool>(Error.ValidationFailures("Email or Password is not valid."));
         }
         var result=user.SetForgetCode(string.Empty.GenerateRandomString(5),5);
-        if (result.IsFailure)
+        if (result.isFailure)
         {
             return result;
         }
