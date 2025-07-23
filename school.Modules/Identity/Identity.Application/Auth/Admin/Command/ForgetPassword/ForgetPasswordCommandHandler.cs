@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Shared.Domain.CQRS;
 using Shared.Domain.Extensions;
 using Shared.Domain.OperationResult;
+using Shared.Domain.Services.Hash;
 using Shared.Domain.Services.Twilio;
 
 
@@ -14,11 +15,13 @@ internal sealed class ForgetPasswordCommandHandler: ICommandHandler<ForgetPasswo
 {
 
     private readonly IUnitOfWork  _unitOfWork;
+    private readonly IWordHasherService _wordHasherService;
 
 
-    public ForgetPasswordCommandHandler(IUnitOfWork  unitOfWork,ISmsTwilioService  smsTwilioService)
+    public ForgetPasswordCommandHandler(IWordHasherService wordHasherService,IUnitOfWork  unitOfWork,ISmsTwilioService  smsTwilioService)
     {
         _unitOfWork=unitOfWork;
+        _wordHasherService=wordHasherService;
     }
     public async Task<TResult<bool>> Handle(ForgetPasswordCommand request, CancellationToken cancellationToken)
     {
@@ -29,7 +32,7 @@ internal sealed class ForgetPasswordCommandHandler: ICommandHandler<ForgetPasswo
             
             return Result.ValidationFailure<bool>(Error.ValidationFailures("Email or Password is not valid."));
         }
-        var result=admin.SetForgetCode(string.Empty.GenerateRandomString(5),5);
+        var result=admin.SetForgetCode(string.Empty.GenerateRandomString(5),5,_wordHasherService);
         if (result.isFailure)
         {
             return result;
