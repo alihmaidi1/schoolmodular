@@ -3,6 +3,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Shared.Application.CQRS;
 using Shared.Domain.CQRS;
+using Shared.Domain.Exception;
 using Shared.Domain.OperationResult;
 
 namespace Shared.Application.PiplineBehavior;
@@ -26,14 +27,14 @@ public class IdempotencyBehavior<TRequest,TResponse>: IPipelineBehavior<TRequest
         if (request.RequestId==null)
          {
              logger.LogWarning("Idempotency check failed: RequestId is null for {CommandType}", typeof(TRequest).Name);
-             return (TResponse)Result.ValidationFailure<object>(Error.ValidationFailures("Idempotency check failed: RequestId is null")).ToActionResult();
+             throw new IdempotencyException("Idempotency check failed: RequestId is null");
          }
          string cacheKey = $"Idempotent_{typeof(TRequest).Name}_{request.RequestId}";
          if (_cache.TryGetValue(cacheKey, out var cachedResult))
          {
              logger.LogInformation("Returning cached idempotent result for {CacheKey}", cacheKey);
-             return (TResponse)Result.Conflict<object>(Error.AlreadyProcessed).ToActionResult();
-              
+             throw new IdempotencyException($"Returning cached idempotent result for {cacheKey}");
+             
          }
              
          var result = await next();
