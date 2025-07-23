@@ -1,6 +1,7 @@
 using Identity.Domain.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Shared.Domain.CQRS;
 using Shared.Domain.Extensions;
 using Shared.Domain.OperationResult;
@@ -9,39 +10,32 @@ using Shared.Domain.Services.Twilio;
 
 namespace Identity.Application.Auth.Admin.Command.ForgetPassword;
 
-internal sealed class ForgetPasswordCommandHandler: ICommandHandler<ForgetPasswordCommand,IResult>
+internal sealed class ForgetPasswordCommandHandler: ICommandHandler<ForgetPasswordCommand,TResult<bool>>
 {
 
     private readonly IUnitOfWork  _unitOfWork;
-    private readonly UserManager<Domain.Security.User>  _userManager;
 
 
-    public ForgetPasswordCommandHandler(IUnitOfWork  unitOfWork,UserManager<Domain.Security.User>  userManager,ISmsTwilioService  smsTwilioService)
+    public ForgetPasswordCommandHandler(IUnitOfWork  unitOfWork,ISmsTwilioService  smsTwilioService)
     {
-        _userManager = userManager;
         _unitOfWork=unitOfWork;
     }
-    public async Task<IResult> Handle(ForgetPasswordCommand request, CancellationToken cancellationToken)
+    public async Task<TResult<bool>> Handle(ForgetPasswordCommand request, CancellationToken cancellationToken)
     {
-        var user=await _userManager.FindByEmailAsync(request.Email);
-        if (user == null)
+        var admin=await _unitOfWork._adminRepository.GetQueryable()
+            .FirstOrDefaultAsync(x=>x.Email==request.Email,cancellationToken);
+        if (admin == null)
         {
             
-            return Result.ValidationFailure<bool>(Error.ValidationFailures("Email or Password is not valid.")).ToActionResult();
+            return Result.ValidationFailure<bool>(Error.ValidationFailures("Email or Password is not valid."));
         }
-        var result=user.SetForgetCode(string.Empty.GenerateRandomString(5),5);
-        if (result.IsFailure)
+        var result=admin.SetForgetCode(string.Empty.GenerateRandomString(5),5);
+        if (result.isFailure)
         {
-            return result.ToActionResult();
+            return result;
         }
-        var _identityResult = await _userManager.UpdateAsync(user);
-        if (!_identityResult.Succeeded)
-        {
-            return Result.InternalError<bool>(Error.Internal(_identityResult.Errors.First().Description)).ToActionResult();
-            
-        }
-
+        await _unitOfWork._adminRepository.UpdateAsync(admin);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
-        return Result.Success(true).ToActionResult();
+        return Result.Success(true);
     }
 }

@@ -6,5 +6,7 @@ public class LoginAdminResponse
     
     public string RefreshToken { get; set; }
     
-    public int ExpiresIn { get; set; }
+    public DateTime ExpiresIn { get; set; }
+    
+    public List<string> permissions { get; set; } 
 }

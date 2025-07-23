@@ -1,7 +1,9 @@
 using Identity.Domain.Security;
+using Identity.Domain.Security.Admin;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Shared.Domain.Services.Hash;
 
 namespace Identity.infrastructure.Seed;
 
@@ -11,9 +13,8 @@ public static class IdentityDatabaseSeed
 
     public static async Task InitializeAsync(IServiceProvider services)
     {
-        var context = services.GetRequiredService<schoolIdentityDbContext>();     
-        var roleManager = services.GetRequiredService<RoleManager<Role>>();     
-        var userManager = services.GetRequiredService<UserManager<User>>();     
+        var context = services.GetRequiredService<schoolIdentityDbContext>();  
+        var wordHasherService = services.GetRequiredService<IWordHasherService>();
         await context.Database.EnsureCreatedAsync();    
         var pendingMigration = await context.Database.GetPendingMigrationsAsync();
         if (!pendingMigration.Any())
@@ -24,8 +25,7 @@ public static class IdentityDatabaseSeed
         try
         {
 
-            await DefaultRoleSeeder.seedData(context);
-            await DefaultUserSeeder.seedData(userManager);
+            await DefaultUserSeeder.seedData(context,wordHasherService);
 
 
         }

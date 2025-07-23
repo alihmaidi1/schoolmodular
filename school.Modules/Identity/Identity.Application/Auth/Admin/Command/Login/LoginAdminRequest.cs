@@ -1,3 +1,5 @@
+using Shared.Domain.OperationResult;
+
 namespace Identity.Application.Auth.Admin.Command.Login;
 
 using Microsoft.AspNetCore.Http;
@@ -11,7 +13,7 @@ public class LoginAdminRequest
     
 }
 
-public sealed class LoginAdminCommand:LoginAdminRequest, ICommand<IResult>
+public sealed class LoginAdminCommand:LoginAdminRequest, ICommand<TResult<LoginAdminResponse>>
 {
     public Guid? RequestId { get; set; }
 }

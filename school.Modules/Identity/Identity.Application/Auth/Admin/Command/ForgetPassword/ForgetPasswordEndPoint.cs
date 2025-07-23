@@ -22,7 +22,7 @@ public class ForgetPasswordEndPoint: ICarterModule
                     ForgetPasswordCommand command = request.Adapt<ForgetPasswordCommand>();
                     command.RequestId = RequestId;
                     var result=await dispatcher.Send(command, cancellationToken);
-                    return result;
+                    return result.ToActionResult();
                 })
             .Produces<TResult<bool>>(StatusCodes.Status201Created)
             .ProducesProblem(StatusCodes.Status400BadRequest)
