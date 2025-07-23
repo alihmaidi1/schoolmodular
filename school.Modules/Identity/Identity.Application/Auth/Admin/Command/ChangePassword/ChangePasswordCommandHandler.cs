@@ -12,7 +12,7 @@ internal sealed class ChangePasswordCommandHandler
     private readonly ICurrentUserService _currentUserService;
     public ChangePasswordCommandHandler(ICurrentUserService  currentUserService)
     {
-        
+        // dd
         _currentUserService=currentUserService;
     }
     
