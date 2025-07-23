@@ -1,84 +1,117 @@
 using System.Collections.Concurrent;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
-using Shared.Application.CQRS;
 using Shared.Domain.CQRS;
+
+namespace Shared.Application.CQRS;
 
 public class Dispatcher : IDispatcher
 {
     private readonly IServiceProvider _serviceProvider;
-    private static readonly ConcurrentDictionary<Type, Type> _commandHandlerTypes = new();
-    private static readonly ConcurrentDictionary<Type, Type> _queryHandlerTypes = new();
-    private static readonly ConcurrentDictionary<Type, MethodInfo> _handlerMethods = new();
+    private static readonly ConcurrentDictionary<Type, Type> _voidCommandHandlerTypes = new();
+    private static readonly ConcurrentDictionary<(Type requestType, Type resultType), Type> _handlerTypeCache = new();
+    private static readonly ConcurrentDictionary<Type, MethodInfo> _handlerMethodCache = new();
 
     public Dispatcher(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
     }
 
-    public async Task<TResult> Send<TResult>(ICommand<TResult> command, CancellationToken cancellationToken = default)
+    public async Task<TResult> Send<TResult>(IRequest<TResult> request, CancellationToken cancellationToken = default)
     {
-        if (command == null)
-            throw new ArgumentNullException(nameof(command));
-
-        var commandType = command.GetType();
-        var handlerType = _commandHandlerTypes.GetOrAdd(commandType, 
-            t => typeof(ICommandHandler<,>).MakeGenericType(t, typeof(TResult)));
-
-        return await InvokePipeline<TResult>(command, handlerType, cancellationToken);
-    }
-
-    public async Task<TResult> Send<TResult>(IQuery<TResult> query, CancellationToken cancellationToken = default)
-    {
-        if (query == null)
-            throw new ArgumentNullException(nameof(query));
-
-        var queryType = query.GetType();
-        var handlerType = _queryHandlerTypes.GetOrAdd(queryType, 
-            t => typeof(IQueryHandler<,>).MakeGenericType(t, typeof(TResult)));
-
-        return await InvokePipeline<TResult>(query, handlerType, cancellationToken);
-    }
-
-    private async Task<TResult> InvokePipeline<TResult>(IRequest<TResult> request, Type handlerType, CancellationToken cancellationToken)
-    {
-        
         var requestType = request.GetType();
+        var cacheKey = (requestType, typeof(TResult));
+
+        var handlerType = _handlerTypeCache.GetOrAdd(cacheKey,
+            _ => typeof(IRequestHandler<,>).MakeGenericType(requestType, typeof(TResult)));
+
+        return await InvokePipelineWithResult(request, handlerType, cancellationToken);
+    }
+
+
+    public async Task Send(IRequest request, CancellationToken cancellationToken = default)
+    {
+        var requestType = request.GetType();
+
+        var handlerType = _voidCommandHandlerTypes.GetOrAdd(requestType,
+            t => typeof(IRequestHandler<>).MakeGenericType(t));
+
+        await InvokeVoidPipeline(request, handlerType, cancellationToken);
+    }
     
+    
+    
+    private async Task<TResult> InvokePipelineWithResult<TResult>(
+        IRequest<TResult> request, 
+        Type handlerType, 
+        CancellationToken cancellationToken)
+    {
+        var requestType = request.GetType();
         var behaviorType = typeof(IPipelineBehavior<,>).MakeGenericType(requestType, typeof(TResult));
     
-        var behaviors = (IEnumerable<object>)_serviceProvider.GetServices(behaviorType)
-            .OrderBy(x=>x.GetType().GetCustomAttribute<PiplineOrderAttribute>()?.Order??0)
-            .Reverse()
-            .ToList();
+        var behaviors = GetOrderedBehaviors(behaviorType);
         Func<Task<TResult>> handler = () => InvokeHandler<TResult>(handlerType, request, cancellationToken);
-
-        // بناء سلسلة الـ Behaviors
+    
         foreach (var behavior in behaviors)
         {
             var currentHandler = handler;
-            handler = () => (Task<TResult>)behavior.GetType().GetMethod("Handle").Invoke(
+            handler = () => (Task<TResult>)behavior.GetType().GetMethod("Handle")!.Invoke(
                 behavior,
-                new object[] { request, cancellationToken, currentHandler });
+                new object[] { request, cancellationToken, currentHandler })!;
         }
-
+    
         return await handler();
     }
-
+    
+    private async Task InvokeVoidPipeline(
+        IRequest request, 
+        Type handlerType, 
+        CancellationToken cancellationToken)
+    {
+        var requestType = request.GetType();
+        var behaviorType = typeof(IPipelineBehavior<>).MakeGenericType(requestType);
+    
+        var behaviors = GetOrderedBehaviors(behaviorType);
+        Func<Task> handler = () => InvokeVoidHandler(handlerType, request, cancellationToken);
+    
+        foreach (var behavior in behaviors)
+        {
+            var currentHandler = handler;
+            handler = () => (Task)behavior.GetType().GetMethod("Handle")!.Invoke(
+                behavior,
+                new object[] { request, cancellationToken, currentHandler })!;
+        }
+    
+        await handler();
+    }
+    
+    private IEnumerable<object> GetOrderedBehaviors(Type behaviorType)
+    {
+        return (IEnumerable<object>)_serviceProvider.GetServices(behaviorType)
+            .OrderBy(x => x.GetType().GetCustomAttribute<PiplineOrderAttribute>()?.Order ?? 0)
+            .Reverse()
+            .ToList();
+    }
+    
+    
     private async Task<TResult> InvokeHandler<TResult>(Type handlerType, object request, CancellationToken cancellationToken)
     {
-        try
-        {
-            var handler = _serviceProvider.GetRequiredService(handlerType);
-            var method = _handlerMethods.GetOrAdd(handlerType, 
-                t => t.GetMethod("Handle") ?? throw new InvalidOperationException($"Handle method not found on {t.Name}"));
-            var result = method.Invoke(handler, new[] { request, cancellationToken });
+        var handler = _serviceProvider.GetRequiredService(handlerType);
+        var method = _handlerMethodCache.GetOrAdd(handlerType,
+            t => t.GetMethod("Handle") ?? throw new InvalidOperationException($"Handle method not found on {t.Name}"));
 
-            return await (Task<TResult>)result;
-        }
-        catch (Exception ex)
-        {
-            throw new InvalidOperationException(ex.Message);
-        }
+        var result = method.Invoke(handler, new[] { request, cancellationToken });
+        return await (Task<TResult>)result!;
     }
+
+    private async Task InvokeVoidHandler(Type handlerType, object request, CancellationToken cancellationToken)
+    {
+        var handler = _serviceProvider.GetRequiredService(handlerType);
+        var method = _handlerMethodCache.GetOrAdd(handlerType,
+            t => t.GetMethod("Handle") ?? throw new InvalidOperationException($"Handle method not found on {t.Name}"));
+
+        var result = method.Invoke(handler, new[] { request, cancellationToken });
+        await (Task)result!;
+    }
+
 }

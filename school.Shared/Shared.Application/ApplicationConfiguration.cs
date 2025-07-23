@@ -37,13 +37,10 @@ public static class ApplicationConfiguration
                 .WithScopedLifetime()
                 .AddClasses(classes => classes.AssignableTo(typeof(IPipelineBehavior<,>)), publicOnly: false)
                 .AsImplementedInterfaces()
-                
                 .WithScopedLifetime()
                 
-                
-                
-                
         );
+        
         services.AddScoped<IDispatcher, Dispatcher>();
         services.AddSingleton<IEventDispatcher, EventDispatcher>();
         services.AddValidatorsFromAssemblies(assemblies.Values.ToArray(),includeInternalTypes:true);
