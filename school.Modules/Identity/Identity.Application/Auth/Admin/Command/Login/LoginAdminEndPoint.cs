@@ -1,11 +1,10 @@
 using Carter;
-using Identity.Application.Auth.Admin.Command.Login;
 using Mapster;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using Shared.Domain.CQRS;
 using Shared.Domain.OperationResult;
 
 namespace Identity.Application.Auth.Admin.Command.Login;
@@ -16,11 +15,10 @@ public class LoginAdminEndPoint: ICarterModule
     public void AddRoutes(IEndpointRouteBuilder app)
     {
         app.MapPost("/admin/login", 
-                async ([FromBody]  LoginAdminRequest request,[FromHeader]Guid RequestId,IDispatcher  dispatcher,CancellationToken cancellationToken) =>
+                async ([FromBody]  LoginAdminRequest request,ISender  sender,CancellationToken cancellationToken) =>
                 {
                     LoginAdminCommand command = request.Adapt<LoginAdminCommand>();
-                    command.RequestId = RequestId;
-                    var result=await dispatcher.Send(command, cancellationToken);
+                    var result=await sender.Send(command, cancellationToken);
                     return result.ToActionResult();
                 })
             .Produces<TResult<LoginAdminResponse>>(StatusCodes.Status201Created)

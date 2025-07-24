@@ -1,4 +1,3 @@
-using Shared.Domain.CQRS;
 using Shared.Domain.Event;
 
 namespace Shared.Domain.Entities;

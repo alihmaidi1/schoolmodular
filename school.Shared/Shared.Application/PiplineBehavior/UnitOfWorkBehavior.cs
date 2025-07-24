@@ -1,17 +1,16 @@
 using System.Transactions;
-using Shared.Application.CQRS;
-using Shared.Domain.CQRS;
+using MediatR;
 using Shared.Domain.OperationResult;
 
 namespace Shared.Application.PiplineBehavior;
 
 
-[PiplineOrder(2)]
 
 public class UnitOfWorkBehavior<TRequest,TResponse>: IPipelineBehavior<TRequest,TResponse>
     where TRequest : IRequest<TResponse> where TResponse : Result
 {
-    public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, Func<Task<TResponse>> next)
+
+    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
         using var transactionScope = new TransactionScope(
             TransactionScopeOption.Required,

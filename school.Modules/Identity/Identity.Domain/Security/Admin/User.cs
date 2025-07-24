@@ -1,10 +1,10 @@
 using Identity.Domain.Event;
 using Microsoft.AspNetCore.Identity;
-using Shared.Domain.CQRS;
 using Shared.Domain.Entities;
 using Shared.Domain.Event;
 using Shared.Domain.OperationResult;
-namespace Identity.Domain.Security;
+
+namespace Identity.Domain.Security.Admin;
 
 public class User: IdentityUser<Guid>, IAggregate
 {

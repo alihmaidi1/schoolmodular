@@ -1,9 +1,7 @@
 using Identity.Domain.Repository;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Shared.Domain.CQRS;
 using Shared.Domain.Extensions;
+using Shared.Domain.MediatR;
 using Shared.Domain.OperationResult;
 using Shared.Domain.Services.Hash;
 using Shared.Domain.Services.Twilio;

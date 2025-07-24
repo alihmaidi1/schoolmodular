@@ -1,5 +1,4 @@
 using Identity.Domain.Event;
-using Shared.Domain.CQRS;
 using Shared.Domain.Event;
 
 namespace Identity.Application.EventHandlers;

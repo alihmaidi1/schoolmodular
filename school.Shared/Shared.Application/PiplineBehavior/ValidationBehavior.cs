@@ -1,14 +1,10 @@
 using FluentValidation;
 using FluentValidation.Results;
-using Mapster;
-using Microsoft.AspNetCore.Http;
-using Shared.Application.CQRS;
-using Shared.Domain.CQRS;
+using MediatR;
 using Shared.Domain.OperationResult;
 
 namespace Shared.Application.PiplineBehavior;
 
-[PiplineOrder(4)]
 public class ValidationBehavior<TRequest,TResponse>: IPipelineBehavior<TRequest,TResponse>
     where TRequest : IRequest<TResponse> where TResponse: Result
 
@@ -18,16 +14,6 @@ public class ValidationBehavior<TRequest,TResponse>: IPipelineBehavior<TRequest,
     public ValidationBehavior(IEnumerable<IValidator<TRequest>> validators)
     {
         _validators = validators;
-    }
-    public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, Func<Task<TResponse>> next)
-    {
-        var validationFailures = await ValidateAsync(request, _validators);
-         if (validationFailures == null)
-         {
-             return await next();
-         }
-
-         throw new ValidationException(validationFailures);
     }
     
     
@@ -60,4 +46,15 @@ public class ValidationBehavior<TRequest,TResponse>: IPipelineBehavior<TRequest,
 
      }
 
+    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+    {
+        
+        var validationFailures = await ValidateAsync(request, _validators);
+        if (validationFailures == null)
+        {
+            return await next();
+        }
+
+        throw new ValidationException(validationFailures);
+    }
 }

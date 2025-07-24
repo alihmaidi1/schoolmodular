@@ -1,10 +1,10 @@
 using Carter;
 using Mapster;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using Shared.Domain.CQRS;
 using Shared.Domain.OperationResult;
 
 namespace Identity.Application.Auth.Admin.Command.ForgetPassword;
@@ -17,11 +17,10 @@ public class ForgetPasswordEndPoint: ICarterModule
     {
         
         app.MapPost("/admins/forgetPassword", 
-                async ([FromBody]  ForgetPasswordRequest request,[FromHeader]Guid RequestId,IDispatcher  dispatcher,CancellationToken cancellationToken) =>
+                async ([FromBody]  ForgetPasswordRequest request,ISender  sender,CancellationToken cancellationToken) =>
                 {
                     ForgetPasswordCommand command = request.Adapt<ForgetPasswordCommand>();
-                    command.RequestId = RequestId;
-                    var result=await dispatcher.Send(command, cancellationToken);
+                    var result=await sender.Send(command, cancellationToken);
                     return result.ToActionResult();
                 })
             .Produces<TResult<bool>>(StatusCodes.Status201Created)

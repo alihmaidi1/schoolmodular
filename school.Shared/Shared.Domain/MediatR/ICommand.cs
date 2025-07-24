@@ -1,4 +1,6 @@
-namespace Shared.Domain.CQRS;
+using MediatR;
+
+namespace Shared.Domain.MediatR;
 
 public interface ICommand<TResult>: IRequest<TResult>
 {
