@@ -14,6 +14,7 @@
       <Folder Include="Security\Parent\" />
       <Folder Include="Security\Student\" />
       <Folder Include="Security\Teacher\" />
+      <Folder Include="Services\" />
     </ItemGroup>
 
 </Project>

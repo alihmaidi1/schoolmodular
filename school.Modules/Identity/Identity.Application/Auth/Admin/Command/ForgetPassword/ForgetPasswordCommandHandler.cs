@@ -1,9 +1,9 @@
 using Identity.Domain.Repository;
+using Identity.Domain.Services.Hash;
 using Microsoft.EntityFrameworkCore;
 using Shared.Domain.Extensions;
 using Shared.Domain.MediatR;
 using Shared.Domain.OperationResult;
-using Shared.Domain.Services.Hash;
 using Shared.Domain.Services.Twilio;
 
 

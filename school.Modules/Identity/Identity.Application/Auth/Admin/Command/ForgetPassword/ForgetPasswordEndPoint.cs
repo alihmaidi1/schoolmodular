@@ -17,11 +17,11 @@ public class ForgetPasswordEndPoint: ICarterModule
     {
         
         app.MapPost("/admins/forgetPassword", 
-                async ([FromBody]  ForgetPasswordRequest request,ISender  sender,CancellationToken cancellationToken) =>
+                async ([FromBody]  ForgetPasswordRequest request,CancellationToken cancellationToken) =>
                 {
-                    ForgetPasswordCommand command = request.Adapt<ForgetPasswordCommand>();
-                    var result=await sender.Send(command, cancellationToken);
-                    return result.ToActionResult();
+                    // ForgetPasswordCommand command = request.Adapt<ForgetPasswordCommand>();
+                    // var result=await sender.Send(command, cancellationToken);
+                    // return result.ToActionResult();
                 })
             .Produces<TResult<bool>>(StatusCodes.Status201Created)
             .ProducesProblem(StatusCodes.Status400BadRequest)

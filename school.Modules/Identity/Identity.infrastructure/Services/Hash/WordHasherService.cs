@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
-using Shared.Domain.Services.Hash;
+using Identity.Domain.Services.Hash;
 
-namespace Shared.Infrastructure.Services.Hash;
+namespace Identity.infrastructure.Services.Hash;
 
 public class WordHasherService: IWordHasherService
 {

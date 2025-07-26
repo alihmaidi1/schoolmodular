@@ -1,7 +1,7 @@
 using System.Reflection;
 using Shared.Architecture;
 
-namespace Identity.ArchitectureTest;
+namespace Identity.Test.ArchitectureTest;
 
 public class ApplicationTests: CommonApplicationTests
 {

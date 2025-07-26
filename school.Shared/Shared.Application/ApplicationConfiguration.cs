@@ -26,20 +26,21 @@ public static class ApplicationConfiguration
         #region Core
         services.AddVersioning();
         services.AddMemoryCache();
+        // services.AddCarter();
         services.AddCarterWithAssemblies(assemblies.Values.ToArray());
 
         #endregion        
         
         #region CQRS_Abstraction
         
-        services.AddMediatR(config => config.RegisterServicesFromAssemblies(allAssemblies.ToArray()));
-
-        services.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
-        services.AddScoped(typeof(IPipelineBehavior<,>), typeof(UnitOfWorkBehavior<,>));
-        services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        // services.AddMediatR(config => config.RegisterServicesFromAssemblies(allAssemblies.ToArray()));
+        //
+        // services.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
+        // services.AddScoped(typeof(IPipelineBehavior<,>), typeof(UnitOfWorkBehavior<,>));
+        // services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        // services.AddValidatorsFromAssemblies(assemblies.Values.ToArray(),includeInternalTypes:true);
 
         services.AddSingleton<IEventDispatcher, EventDispatcher>();
-        services.AddValidatorsFromAssemblies(assemblies.Values.ToArray(),includeInternalTypes:true);
         foreach (var assembly in assemblies)
         {
 

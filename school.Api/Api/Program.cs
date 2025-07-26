@@ -1,12 +1,27 @@
 using Api.Extensions;
+using Api.Modules;
+using Api.Modules.Identity;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using Shared.Infrastructure.Messages;
+using ILogger = Serilog.ILogger;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((context, config) =>
     config.ReadFrom.Configuration(context.Configuration));
 
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
+{
+    containerBuilder.RegisterModule(new IdentityAutofacModule()); 
+});
+
+
+
+
 var allAssembly = AppDomain.CurrentDomain.GetAssemblies();
+
 
 
 
@@ -34,6 +49,12 @@ builder.Services
 builder.Services.AddNotificationModule(builder.Configuration);
 
 var app = builder.Build();
+
+// ModuleHelper.InitializeModules();
+var _logger = app.Services.GetRequiredService<ILogger>();
+await ModuleHelper.InitializeModules(
+    builder.Configuration.GetConnectionString("DefaultConnection")!,
+    _logger);
 
 app.MapOpenApi();
 app.UseInfrastructure()
