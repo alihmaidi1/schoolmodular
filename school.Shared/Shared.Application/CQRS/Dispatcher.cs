@@ -78,7 +78,7 @@ public class Dispatcher : IDispatcher
         }
         catch (Exception ex)
         {
-            throw new InvalidOperationException($"Error invoking handler for {request.GetType().Name}", ex);
+            throw new InvalidOperationException(ex.Message);
         }
     }
 }

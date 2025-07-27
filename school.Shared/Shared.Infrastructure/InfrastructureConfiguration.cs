@@ -10,6 +10,7 @@ using Shared.Domain.Entities.Message;
 using Shared.Domain.Event;
 using Shared.Domain.Services;
 using Shared.Domain.Services.Email;
+using Shared.Domain.Services.Hash;
 using Shared.Domain.Services.Twilio;
 using Shared.Infrastructure.Extensions;
 using Shared.Infrastructure.Messages;
@@ -18,6 +19,7 @@ using Shared.Infrastructure.Security;
 using Shared.Infrastructure.Security.Jwt;
 using Shared.Infrastructure.Services;
 using Shared.Infrastructure.Services.Email;
+using Shared.Infrastructure.Services.Hash;
 using Shared.Infrastructure.Services.Twilio;
 using Shared.Infrastructure.Services.Whatsapp;
 
@@ -32,6 +34,8 @@ public static class InfrastructureConfiguration
         IConfiguration configuration,List<Type>  dbContexts)
     {
 
+
+        services.AddSingleton<IWordHasherService, WordHasherService>();
         services.AddLimitRate();
         services.AddJwtConfiguration(configuration);
         
@@ -41,6 +45,7 @@ public static class InfrastructureConfiguration
             .ValidateOnStart();
         
         services.AddScoped<ISmsTwilioService,SmsTwilioService>();
+        
         
         services.AddOptions<TwilioSmsSetting>()
             .BindConfiguration("Twilio")
@@ -76,7 +81,7 @@ public static class InfrastructureConfiguration
             var inboxServiceType = typeof(MessageProcessor<,,>).MakeGenericType(dbContextType, typeof(InboxMessage),typeof(IIntegrationEvent));
             services.AddSingleton(typeof(IHostedService),outboxServiceType);
             services.AddSingleton(typeof(IHostedService),inboxServiceType);
-
+        
         }
 
 

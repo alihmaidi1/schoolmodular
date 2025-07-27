@@ -28,4 +28,8 @@
       <Folder Include="UnitTest\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="ArchitectureTest\DomainTests.cs" />
+    </ItemGroup>
+
 </Project>

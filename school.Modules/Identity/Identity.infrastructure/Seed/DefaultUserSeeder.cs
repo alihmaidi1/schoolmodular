@@ -1,29 +1,28 @@
 using Identity.Domain.Enum;
 using Identity.Domain.Security;
+using Identity.Domain.Security.Admin;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Shared.Domain.Services.Hash;
 
 namespace Identity.infrastructure.Seed;
 
 public class DefaultUserSeeder
 {
     
-    public static async Task seedData(UserManager<User> userManager)
+    public static async Task seedData(schoolIdentityDbContext dbContext,IWordHasherService wordHasherService)
     {
-        if (!userManager.Users.Any())
+        
+        if (!dbContext.Admins.Any())
         {
-            var defaultUser = new User()
-            {
-                UserName = nameof(StaticRole.SuperAdmin),
-                Email = nameof(StaticRole.SuperAdmin)+"@gmail.com",
-                EmailConfirmed = true,
-                UserType = UserType.Admin,
-                
-                
-                
-            };
-            await userManager.CreateAsync(defaultUser, "StrongPassword123!");
-            await userManager.AddToRoleAsync(defaultUser, nameof(StaticRole.SuperAdmin));
+            var role = Role.Create(nameof(StaticRole.SuperAdmin),Enum.GetNames(typeof(Permission)).ToList());
+            
+            var superAdmin = Admin.Create(nameof(StaticRole.SuperAdmin)+"@gmail.com", "12345678",role,wordHasherService);
+            
+            dbContext.Admins.Add(superAdmin);
+            await dbContext.SaveChangesAsync();
         }
+
         
     }
 

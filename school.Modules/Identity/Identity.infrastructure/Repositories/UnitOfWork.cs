@@ -8,10 +8,15 @@ public class UnitOfWork: IUnitOfWork
     private readonly schoolIdentityDbContext _context;
     private IDbContextTransaction? _transaction;
 
-    public UnitOfWork(schoolIdentityDbContext context)
+    public UnitOfWork(IAdminRepository adminRepository,IJwtRepository jwtRepository,schoolIdentityDbContext context)
     {
         _context = context;
+        _jwtRepository = jwtRepository;
+        _adminRepository = adminRepository;
     }
+
+    public IJwtRepository _jwtRepository { get; }
+    public IAdminRepository _adminRepository { get; }
 
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         => await _context.SaveChangesAsync(cancellationToken);

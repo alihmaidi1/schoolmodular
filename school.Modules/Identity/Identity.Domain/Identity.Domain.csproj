@@ -10,4 +10,10 @@
       <ProjectReference Include="..\..\..\school.Shared\Shared.Domain\Shared.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Security\Parent\" />
+      <Folder Include="Security\Student\" />
+      <Folder Include="Security\Teacher\" />
+    </ItemGroup>
+
 </Project>

@@ -1,5 +1,6 @@
 using System.Reflection;
 using Identity.Domain.Security;
+using Identity.Domain.Security.Admin;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Shared.Infrastructure.Database;
@@ -9,7 +10,7 @@ using Shared.Infrastructure.Messages.Outbox;
 
 namespace Identity.infrastructure;
 
-public class schoolIdentityDbContext: IdentityDbContext<User,Role,Guid>
+public class schoolIdentityDbContext: DbContext
 {
     
     
@@ -34,5 +35,10 @@ public class schoolIdentityDbContext: IdentityDbContext<User,Role,Guid>
     
     
     public DbSet<RefreshToken> RefreshTokens { get; init; }
+    
+    public DbSet<Admin> Admins { get; init; }
+    
+    public DbSet<Role> Roles { get; init; }
+    
 
 }
