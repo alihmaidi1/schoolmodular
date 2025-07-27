@@ -8,10 +8,10 @@ public class UnitOfWork: IUnitOfWork
     private readonly schoolIdentityDbContext _context;
     private IDbContextTransaction? _transaction;
 
-    public UnitOfWork(IAdminRepository adminRepository,IJwtRepository jwtRepository,schoolIdentityDbContext context)
+    public UnitOfWork(IJwtRepository jwtRepository,IAdminRepository adminRepository,schoolIdentityDbContext context)
     {
         _context = context;
-        _jwtRepository = jwtRepository;
+        _jwtRepository=jwtRepository;
         _adminRepository = adminRepository;
     }
 

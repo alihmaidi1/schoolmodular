@@ -1,7 +1,7 @@
 using Identity.Domain.Event;
+using Identity.Domain.Services.Hash;
 using Shared.Domain.Entities;
 using Shared.Domain.OperationResult;
-using Shared.Domain.Services.Hash;
 
 namespace Identity.Domain.Security.Admin;
 

@@ -1,14 +1,15 @@
 using System.Reflection;
 using Carter;
 using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Application.CQRS;
 using Shared.Application.Extensions;
 using Shared.Application.Message;
+using Shared.Application.PiplineBehavior;
 using Shared.Application.Services.User;
 using Shared.Application.Versioning;
-using Shared.Domain.CQRS;
 using Shared.Domain.Entities.Message;
 using Shared.Domain.Event;
 
@@ -19,7 +20,7 @@ public static class ApplicationConfiguration
 
     public static IServiceCollection AddApplication(
         this IServiceCollection services,
-        Dictionary<Type, Assembly> assemblies,List<Assembly> allAssemblies)
+        Dictionary<Type, Assembly> assemblies)
     {
 
         #region Core
@@ -30,23 +31,9 @@ public static class ApplicationConfiguration
         #endregion        
         
         #region CQRS_Abstraction
-        services.Scan(scan =>
-            scan.FromAssemblies(allAssemblies)
-                .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<,>)), publicOnly: false)
-                .AsImplementedInterfaces()
-                .WithScopedLifetime()
-                .AddClasses(classes => classes.AssignableTo(typeof(IPipelineBehavior<,>)), publicOnly: false)
-                .AsImplementedInterfaces()
-                
-                .WithScopedLifetime()
-                
-                
-                
-                
-        );
-        services.AddScoped<IDispatcher, Dispatcher>();
+        
+
         services.AddSingleton<IEventDispatcher, EventDispatcher>();
-        services.AddValidatorsFromAssemblies(assemblies.Values.ToArray(),includeInternalTypes:true);
         foreach (var assembly in assemblies)
         {
 

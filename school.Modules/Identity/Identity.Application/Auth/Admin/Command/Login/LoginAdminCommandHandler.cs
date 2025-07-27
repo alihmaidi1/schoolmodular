@@ -1,12 +1,10 @@
 using Identity.Domain.Repository;
 using Identity.Domain.Security;
+using Identity.Domain.Services.Hash;
 using Mapster;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Shared.Domain.CQRS;
+using Shared.Domain.MediatR;
 using Shared.Domain.OperationResult;
-using Shared.Domain.Services.Hash;
 
 namespace Identity.Application.Auth.Admin.Command.Login;
 
@@ -16,15 +14,16 @@ internal sealed class LoginAdminCommandHandler: ICommandHandler<LoginAdminComman
     
     private IWordHasherService  _wordHasherService;
     private readonly IUnitOfWork  _unitOfWork;
-    public LoginAdminCommandHandler(IWordHasherService  wordHasherService,IUnitOfWork  unitOfWork)
+    public LoginAdminCommandHandler(IUnitOfWork unitOfWork,IWordHasherService  wordHasherService)
     {
         _unitOfWork=unitOfWork;
         _wordHasherService=wordHasherService;
-
+    
     }
     
     public async Task<TResult<LoginAdminResponse>> Handle(LoginAdminCommand request, CancellationToken cancellationToken)
     {
+
         var user = await _unitOfWork
             ._adminRepository.GetQueryable()
             .Include(x=>x.Roles)
@@ -36,7 +35,7 @@ internal sealed class LoginAdminCommandHandler: ICommandHandler<LoginAdminComman
             return Result.ValidationFailure<LoginAdminResponse>(Error.ValidationFailures("Email or Password is not valid."));
             
         }
-
+        
         var permissions = user.Roles.SelectMany(x=>x.Permissions).ToList();
         var tokenInfo = await _unitOfWork._jwtRepository.GetTokensInfo(user.Id,user.Email!,UserType.Admin,cancellationToken,permissions);
         var result = tokenInfo.Adapt<LoginAdminResponse>();

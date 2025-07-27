@@ -1,9 +1,9 @@
 using Identity.Domain.Enum;
 using Identity.Domain.Security;
 using Identity.Domain.Security.Admin;
+using Identity.Domain.Services.Hash;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Shared.Domain.Services.Hash;
 
 namespace Identity.infrastructure.Seed;
 

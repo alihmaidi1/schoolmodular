@@ -1,3 +1,4 @@
+using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.SignalR;
 using Shared.Domain.Event;
@@ -14,6 +15,7 @@ public static class NotificationModule
     public static IServiceCollection AddNotificationModule(this IServiceCollection services,
         IConfiguration configuration)
     {
+
 
         services.AddSignalR(options =>
         {
@@ -32,6 +34,7 @@ public static class NotificationModule
     public static WebApplication UseNotificationModule(this WebApplication app)
     {
 
+        
         return app;
     }
     

@@ -1,8 +1,7 @@
 using System.Reflection;
-using Identity.Domain.Security;
 using Shared.Architecture;
 
-namespace Identity.ArchitectureTest;
+namespace Identity.Test.ArchitectureTest;
 
 public class DomainTests: CommonDomainTests
 {

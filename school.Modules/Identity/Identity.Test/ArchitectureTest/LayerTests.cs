@@ -1,8 +1,7 @@
 using System.Reflection;
-using Microsoft.EntityFrameworkCore;
 using Shared.Architecture;
 
-namespace Identity.ArchitectureTest;
+namespace Identity.Test.ArchitectureTest;
 
 public class LayerTests: CommonLayerTests
 {

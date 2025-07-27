@@ -1,4 +1,4 @@
-namespace Shared.Domain.Services.Hash;
+namespace Identity.Domain.Services.Hash;
 
 public interface IWordHasherService
 {
