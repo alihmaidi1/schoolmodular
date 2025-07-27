@@ -1,11 +1,3 @@
-using Api.Extensions;
-using Api.Modules;
-using Api.Modules.Identity;
-using Autofac;
-using Autofac.Extensions.DependencyInjection;
-using Shared.Infrastructure.Messages;
-using ILogger = Serilog.ILogger;
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((context, config) =>
@@ -36,13 +28,11 @@ builder.Services.AddOpenApi(options =>
 
 
 builder.Services.AddInfrastructure(builder.Configuration,ModuleExtension.GetModuleAssemblyTypes().Keys.ToList());
-builder.Services.AddApplication(ModuleExtension.GetModuleAssemblyTypes(),AppDomain.CurrentDomain.GetAssemblies().ToList());
+builder.Services.AddApplication(ModuleExtension.GetModuleAssemblyTypes());
 builder.Services.AddScoped<GlobalExceptionHandlingMiddleware>();
 builder.Services.AddMassTransitWithAssemblies(builder.Configuration, allAssembly);
 
 builder.Services
-    .AddIdentityApplicationModules(builder.Configuration,typeof(schoolIdentityDbContext))
-    .AddIdentityInfrastructureModule(builder.Configuration)
     .AddCommonApplication();
 
 
@@ -50,17 +40,16 @@ builder.Services.AddNotificationModule(builder.Configuration);
 
 var app = builder.Build();
 
-// ModuleHelper.InitializeModules();
 var _logger = app.Services.GetRequiredService<ILogger>();
+var jwtSetting = app.Services.GetRequiredService<IOptions<JwtSetting>>();
 await ModuleHelper.InitializeModules(
     builder.Configuration.GetConnectionString("DefaultConnection")!,
-    _logger);
+    _logger,
+    jwtSetting.Value);
 
 app.MapOpenApi();
 app.UseInfrastructure()
     .UseApplication()
-    .UseIdentityApplicationModule()
-    .UseIdentityInfrastructureModule()
     .UseNotificationModule();
 
 app.MapControllers();

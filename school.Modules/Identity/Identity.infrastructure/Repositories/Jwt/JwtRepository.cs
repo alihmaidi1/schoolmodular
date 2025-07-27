@@ -16,9 +16,9 @@ public class JwtRepository: IJwtRepository
     private readonly schoolIdentityDbContext _context;
     private readonly JwtSetting _jwtOption;
     
-    public JwtRepository(schoolIdentityDbContext context,IOptions<JwtSetting> setting)
+    public JwtRepository(schoolIdentityDbContext context,JwtSetting setting)
     {
-        _jwtOption = setting.Value;
+        _jwtOption = setting;
         _context=context;
     }
     

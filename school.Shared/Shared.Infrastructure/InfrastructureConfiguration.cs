@@ -28,7 +28,6 @@ public static class InfrastructureConfiguration
         IConfiguration configuration,List<Type>  dbContexts)
     {
 
-
         services.AddLimitRate();
         services.AddJwtConfiguration(configuration);
         
@@ -36,48 +35,9 @@ public static class InfrastructureConfiguration
             .BindConfiguration("Jwt")
             .ValidateDataAnnotations()
             .ValidateOnStart();
-        //
-        // services.AddScoped<ISmsTwilioService,SmsTwilioService>();
-        //
-        //
-        // services.AddOptions<TwilioSmsSetting>()
-        //     .BindConfiguration("Twilio")
-        //     .ValidateDataAnnotations()
-        //     .ValidateOnStart();
-        
-        // services.AddScoped<IMailService, MailService>();
-        //
-        // services.AddOptions<MailSetting>()
-        //     .BindConfiguration("Email")
-        //     .ValidateDataAnnotations()
-        //     .ValidateOnStart();
-        //
-    
-        // services.AddScoped<IWhatsAppService, WhatsAppService>();
-        // services.AddRefitClient<IWhatsAppCloudApi>()
-        //     .ConfigureHttpClient(c => c.BaseAddress = new Uri(configuration["WhatsApp:BaseUrl"]!))
-        //     .AddPolicyHandler(PollyExtensions.GetTimeOutPolicy(100))
-        //     .AddPolicyHandler(c=>PollyExtensions.GetRetryPolicy());
-
     
     
-        services.AddOptions<WhatsappMessageSetting>()
-            .BindConfiguration("Whatsapp")
-            .ValidateDataAnnotations()
-            .ValidateOnStart();
         services.TryAddSingleton<InsertOutboxMessagesInterceptor>();
-
-        
-        // foreach (var dbContextType in dbContexts)
-        // {
-        //     var outboxServiceType = typeof(MessageProcessor<,,>).MakeGenericType(dbContextType, typeof(OutboxMessage),typeof(IDomainEvent));
-        //     var inboxServiceType = typeof(MessageProcessor<,,>).MakeGenericType(dbContextType, typeof(InboxMessage),typeof(IIntegrationEvent));
-        //     services.AddSingleton(typeof(IHostedService),outboxServiceType);
-        //     services.AddSingleton(typeof(IHostedService),inboxServiceType);
-        //
-        // }
-
-
                 
         return services;
     }
@@ -85,7 +45,7 @@ public static class InfrastructureConfiguration
     
     public static WebApplication UseInfrastructure(this WebApplication app)
     {
-        // app.UseRateLimiter();
+        app.UseRateLimiter();
         //
         app.UseAuthentication();
    

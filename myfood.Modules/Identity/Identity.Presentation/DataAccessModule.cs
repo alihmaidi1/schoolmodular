@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Shared.Infrastructure.Database;
 using Shared.Infrastructure.Messages.Outbox;
+using Shared.Infrastructure.Security.Jwt;
 
 namespace Identity.Presentation;
 
@@ -17,10 +18,11 @@ internal class DataAccessModule: Module
 
     
     private readonly string _databaseConnectionString;
+    private readonly JwtSetting _jwtSetting;
 
-    internal DataAccessModule(string databaseConnectionString)
+    internal DataAccessModule(string databaseConnectionString,JwtSetting  jwtSetting)
     {
-        
+        _jwtSetting=jwtSetting;
         _databaseConnectionString = databaseConnectionString;
     }
 
@@ -30,6 +32,9 @@ internal class DataAccessModule: Module
         builder.RegisterType<JwtRepository>()
             .As<IJwtRepository>()
             .InstancePerLifetimeScope();
+        builder.RegisterInstance(_jwtSetting)
+            .As<JwtSetting>()
+            .SingleInstance();
 
         builder.RegisterType<WordHasherService>()
             .As<IWordHasherService>()

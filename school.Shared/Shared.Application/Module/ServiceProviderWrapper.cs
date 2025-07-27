@@ -1,6 +1,6 @@
 using Autofac;
 
-namespace Shared.Infrastructure.Modules;
+namespace Shared.Application.Module;
 
 public class ServiceProviderWrapper: IServiceProvider
 {

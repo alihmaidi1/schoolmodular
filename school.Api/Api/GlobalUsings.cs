@@ -1,9 +1,17 @@
 global using Api.JwtConfiguration;
 global using Api.Middleware;
-global using Identity.Application;
 global using Identity.infrastructure;
 global using Notification;
 global using Serilog;
 global using Shared.Application;
 global using Shared.Infrastructure;
 global using Common;
+global using Api.Extensions;
+global using Api.Modules;
+global using Api.Modules.Identity;
+global using Autofac;
+global using Autofac.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Options;
+global using Shared.Infrastructure.Messages;
+global using Shared.Infrastructure.Security.Jwt;
+global using ILogger = Serilog.ILogger;

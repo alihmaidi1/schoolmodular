@@ -1,17 +1,15 @@
 using Autofac;
-using Carter;
-using Microsoft.Extensions.Logging;
 using ILogger = Serilog.ILogger;
 
-namespace Identity.Presentation;
+namespace Shared.Application.Module;
 
-public class LoggingModule: Module
+public class LoggingModule: Autofac.Module
 {
 
 
     private readonly ILogger _logger;
 
-    internal LoggingModule(ILogger logger)
+    public LoggingModule(ILogger logger)
     {
         _logger = logger;
     }

@@ -13,10 +13,10 @@ internal sealed class LoginAdminCommandHandler: ICommandHandler<LoginAdminComman
 {
     
     private IWordHasherService  _wordHasherService;
-    // private readonly IUnitOfWork  _unitOfWork;
-    public LoginAdminCommandHandler(IWordHasherService  wordHasherService)
+    private readonly IUnitOfWork  _unitOfWork;
+    public LoginAdminCommandHandler(IUnitOfWork unitOfWork,IWordHasherService  wordHasherService)
     {
-        // _unitOfWork=unitOfWork;
+        _unitOfWork=unitOfWork;
         _wordHasherService=wordHasherService;
     
     }
@@ -24,25 +24,24 @@ internal sealed class LoginAdminCommandHandler: ICommandHandler<LoginAdminComman
     public async Task<TResult<LoginAdminResponse>> Handle(LoginAdminCommand request, CancellationToken cancellationToken)
     {
 
-        return null;
-        // var user = await _unitOfWork
-        //     ._adminRepository.GetQueryable()
-        //     .Include(x=>x.Roles)
-        //     .FirstOrDefaultAsync(x=>x.Email==request.Email,cancellationToken);
-        //     
-        //     
-        // if (user is null||!_wordHasherService.IsValid(request.Password,user.Password))
-        // {
-        //     return Result.ValidationFailure<LoginAdminResponse>(Error.ValidationFailures("Email or Password is not valid."));
-        //     
-        // }
-        //
-        // var permissions = user.Roles.SelectMany(x=>x.Permissions).ToList();
-        // var tokenInfo = await _unitOfWork._jwtRepository.GetTokensInfo(user.Id,user.Email!,UserType.Admin,cancellationToken,permissions);
-        // var result = tokenInfo.Adapt<LoginAdminResponse>();
-        // result.permissions = permissions;
-        // await _unitOfWork.SaveChangesAsync(cancellationToken);
-        // return Result.Success(result);
+        var user = await _unitOfWork
+            ._adminRepository.GetQueryable()
+            .Include(x=>x.Roles)
+            .FirstOrDefaultAsync(x=>x.Email==request.Email,cancellationToken);
+            
+            
+        if (user is null||!_wordHasherService.IsValid(request.Password,user.Password))
+        {
+            return Result.ValidationFailure<LoginAdminResponse>(Error.ValidationFailures("Email or Password is not valid."));
+            
+        }
+        
+        var permissions = user.Roles.SelectMany(x=>x.Permissions).ToList();
+        var tokenInfo = await _unitOfWork._jwtRepository.GetTokensInfo(user.Id,user.Email!,UserType.Admin,cancellationToken,permissions);
+        var result = tokenInfo.Adapt<LoginAdminResponse>();
+        result.permissions = permissions;
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        return Result.Success(result);
 
     }
 }

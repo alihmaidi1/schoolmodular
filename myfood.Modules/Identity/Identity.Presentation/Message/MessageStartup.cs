@@ -24,13 +24,13 @@ internal static class MessageStartup
         
     }
 
-    public static async Task StopMessageProcessors()
-    {
-        
-        await _outboxmessageProcessor.StopAsync(CancellationToken.None);
-        await _inboxmessageProcessor.StopAsync(CancellationToken.None);
-    }
-    
+    // public static async Task StopMessageProcessors()
+    // {
+    //     
+    //     await _outboxmessageProcessor.StopAsync(CancellationToken.None);
+    //     await _inboxmessageProcessor.StopAsync(CancellationToken.None);
+    // }
+    //
     
     
 

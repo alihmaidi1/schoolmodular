@@ -3,6 +3,7 @@ namespace Identity.Domain.Repository;
 public interface IUnitOfWork:IDisposable
 {
 
+    
     IJwtRepository _jwtRepository { get; }
     
     IAdminRepository _adminRepository { get; }

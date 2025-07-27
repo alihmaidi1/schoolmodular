@@ -20,25 +20,18 @@ public static class ApplicationConfiguration
 
     public static IServiceCollection AddApplication(
         this IServiceCollection services,
-        Dictionary<Type, Assembly> assemblies,List<Assembly> allAssemblies)
+        Dictionary<Type, Assembly> assemblies)
     {
 
         #region Core
         services.AddVersioning();
         services.AddMemoryCache();
-        // services.AddCarter();
         services.AddCarterWithAssemblies(assemblies.Values.ToArray());
 
         #endregion        
         
         #region CQRS_Abstraction
         
-        // services.AddMediatR(config => config.RegisterServicesFromAssemblies(allAssemblies.ToArray()));
-        //
-        // services.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
-        // services.AddScoped(typeof(IPipelineBehavior<,>), typeof(UnitOfWorkBehavior<,>));
-        // services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-        // services.AddValidatorsFromAssemblies(assemblies.Values.ToArray(),includeInternalTypes:true);
 
         services.AddSingleton<IEventDispatcher, EventDispatcher>();
         foreach (var assembly in assemblies)
