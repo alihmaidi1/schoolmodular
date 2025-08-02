@@ -12,10 +12,10 @@ public class MessageModule: Module
     protected override void Load(ContainerBuilder builder)
     {
         
-        builder.RegisterType<MessageProcessor<schoolIdentityDbContext,OutboxMessage,IDomainEvent>>()
+        builder.RegisterType<MessageProcessor<SchoolIdentityDbContext,OutboxMessage,IDomainEvent>>()
             .AsSelf()
             .SingleInstance();
-        builder.RegisterType<MessageProcessor<schoolIdentityDbContext,InboxMessage,IIntegrationEvent>>()
+        builder.RegisterType<MessageProcessor<SchoolIdentityDbContext,InboxMessage,IIntegrationEvent>>()
             .AsSelf()
             .SingleInstance();
 

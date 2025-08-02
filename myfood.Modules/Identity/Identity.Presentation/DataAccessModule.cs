@@ -7,6 +7,11 @@ using Identity.infrastructure.Repositories.Jwt;
 using Identity.infrastructure.Services.Hash;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Core;
+using Serilog.Extensions.Logging;
+using Shared.Domain.Repositories;
 using Shared.Infrastructure.Database;
 using Shared.Infrastructure.Messages.Outbox;
 using Shared.Infrastructure.Security.Jwt;
@@ -20,9 +25,11 @@ internal class DataAccessModule: Module
     private readonly string _databaseConnectionString;
     private readonly JwtSetting _jwtSetting;
 
-    internal DataAccessModule(string databaseConnectionString,JwtSetting  jwtSetting)
+    private readonly ILoggerFactory _loggerFactory;
+    internal DataAccessModule(string databaseConnectionString,JwtSetting  jwtSetting,SerilogLoggerFactory logger)
     {
         _jwtSetting=jwtSetting;
+        _loggerFactory = logger;
         _databaseConnectionString = databaseConnectionString;
     }
 
@@ -49,6 +56,7 @@ internal class DataAccessModule: Module
         
         
         builder.RegisterType<UnitOfWork>()
+            .As<IIdentityUnitOfWork>()
             .As<IUnitOfWork>()
             .InstancePerLifetimeScope();
 
@@ -63,7 +71,7 @@ internal class DataAccessModule: Module
         
         builder.Register(ctx =>
             {
-                var optionsBuilder = new DbContextOptionsBuilder<schoolIdentityDbContext>();
+                var optionsBuilder = new DbContextOptionsBuilder<SchoolIdentityDbContext>();
 
                 var interceptor = ctx.Resolve<InsertOutboxMessagesInterceptor>();
                 var schema = Schemas.Identity;
@@ -74,11 +82,11 @@ internal class DataAccessModule: Module
                     npgsqlOptions => npgsqlOptions.MigrationsHistoryTable(HistoryRepository.DefaultTableName, schema)
                 );
                 optionsBuilder.AddInterceptors(interceptor);
-
-                return new schoolIdentityDbContext(optionsBuilder.Options);
+                optionsBuilder.UseLoggerFactory(_loggerFactory);
+                return new SchoolIdentityDbContext(optionsBuilder.Options);
 
             })
-            .As<schoolIdentityDbContext>()
+            .As<SchoolIdentityDbContext>()
 
             .InstancePerLifetimeScope();
 

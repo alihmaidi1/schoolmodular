@@ -1,14 +1,15 @@
 using Identity.Domain.Repository;
 using Microsoft.EntityFrameworkCore.Storage;
+using Shared.Domain.Repositories;
 
 namespace Identity.infrastructure.Repositories;
 
-public class UnitOfWork: IUnitOfWork
+public class UnitOfWork: IIdentityUnitOfWork
 {
-    private readonly schoolIdentityDbContext _context;
+    private readonly SchoolIdentityDbContext _context;
     private IDbContextTransaction? _transaction;
 
-    public UnitOfWork(IJwtRepository jwtRepository,IAdminRepository adminRepository,schoolIdentityDbContext context)
+    public UnitOfWork(IJwtRepository jwtRepository,IAdminRepository adminRepository,SchoolIdentityDbContext context)
     {
         _context = context;
         _jwtRepository=jwtRepository;

@@ -14,7 +14,7 @@ public static class IdentityDatabaseSeed
 
     public static async Task InitializeAsync(IServiceProvider services)
     {
-        var context = services.GetRequiredService<schoolIdentityDbContext>();  
+        var context = services.GetRequiredService<SchoolIdentityDbContext>();  
         var wordHasherService = services.GetRequiredService<IWordHasherService>();
         await context.Database.EnsureCreatedAsync();    
         var pendingMigration = await context.Database.GetPendingMigrationsAsync();

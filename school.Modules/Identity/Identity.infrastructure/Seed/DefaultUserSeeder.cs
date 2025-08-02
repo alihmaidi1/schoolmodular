@@ -10,7 +10,7 @@ namespace Identity.infrastructure.Seed;
 public class DefaultUserSeeder
 {
     
-    public static async Task seedData(schoolIdentityDbContext dbContext,IWordHasherService wordHasherService)
+    public static async Task seedData(SchoolIdentityDbContext dbContext,IWordHasherService wordHasherService)
     {
         
         if (!dbContext.Admins.Any())

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Shared.Domain.Extensions;
 using Shared.Domain.MediatR;
 using Shared.Domain.OperationResult;
+using Shared.Domain.Repositories;
 using Shared.Domain.Services.Twilio;
 
 
@@ -12,11 +13,11 @@ namespace Identity.Application.Auth.Admin.Command.ForgetPassword;
 internal sealed class ForgetPasswordCommandHandler: ICommandHandler<ForgetPasswordCommand,TResult<bool>>
 {
 
-    private readonly IUnitOfWork  _unitOfWork;
+    private readonly IIdentityUnitOfWork  _unitOfWork;
     private readonly IWordHasherService _wordHasherService;
 
 
-    public ForgetPasswordCommandHandler(IWordHasherService wordHasherService,IUnitOfWork  unitOfWork,ISmsTwilioService  smsTwilioService)
+    public ForgetPasswordCommandHandler(IWordHasherService wordHasherService,IIdentityUnitOfWork  unitOfWork,ISmsTwilioService  smsTwilioService)
     {
         _unitOfWork=unitOfWork;
         _wordHasherService=wordHasherService;

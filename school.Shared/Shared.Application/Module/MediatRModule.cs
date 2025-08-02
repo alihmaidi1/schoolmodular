@@ -4,6 +4,7 @@ using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Shared.Application.PiplineBehavior;
+using Shared.Domain.MediatR;
 
 namespace Shared.Application.Module;
 
@@ -26,6 +27,9 @@ public class MediatRModule: Autofac.Module
             .InstancePerDependency();
 
 
+        builder.RegisterGenericDecorator(
+            typeof(UnitOfWorkCommandHandlerDecorator<,>),
+            typeof(IRequestHandler<,>));
         
         builder.RegisterAssemblyTypes(typeof(IMediator).GetTypeInfo().Assembly)
             .AsImplementedInterfaces()
@@ -54,6 +58,9 @@ public class MediatRModule: Autofac.Module
             .Where(t => t.IsClosedTypeOf(typeof(IValidator<>)))
             .AsImplementedInterfaces()
             .InstancePerLifetimeScope();
+        
+        
+
         
 
     }
