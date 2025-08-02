@@ -3,6 +3,7 @@ using Identity.Domain.Security;
 using Identity.Domain.Security.Admin;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Shared.Infrastructure.Database;
 using Shared.Infrastructure.Messages;
 using Shared.Infrastructure.Messages.Inbox;
@@ -10,11 +11,11 @@ using Shared.Infrastructure.Messages.Outbox;
 
 namespace Identity.infrastructure;
 
-public class schoolIdentityDbContext: DbContext
+public class SchoolIdentityDbContext: DbContext
 {
     
     
-    public schoolIdentityDbContext(DbContextOptions<schoolIdentityDbContext> option) : base(option)
+    public SchoolIdentityDbContext(DbContextOptions<SchoolIdentityDbContext> option) : base(option)
     {
 
 
@@ -23,7 +24,7 @@ public class schoolIdentityDbContext: DbContext
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.HasDefaultSchema(Schemas.Identity);
-        
+           
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         builder.ApplyConfiguration(new OutboxMessageConfiguration());
         builder.ApplyConfiguration(new OutboxMessageConsumerConfiguration());

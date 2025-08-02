@@ -5,6 +5,7 @@ using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Shared.Domain.MediatR;
 using Shared.Domain.OperationResult;
+using Shared.Domain.Repositories;
 
 namespace Identity.Application.Auth.Admin.Command.Login;
 
@@ -13,8 +14,8 @@ internal sealed class LoginAdminCommandHandler: ICommandHandler<LoginAdminComman
 {
     
     private IWordHasherService  _wordHasherService;
-    private readonly IUnitOfWork  _unitOfWork;
-    public LoginAdminCommandHandler(IUnitOfWork unitOfWork,IWordHasherService  wordHasherService)
+    private readonly IIdentityUnitOfWork  _unitOfWork;
+    public LoginAdminCommandHandler(IIdentityUnitOfWork unitOfWork,IWordHasherService  wordHasherService)
     {
         _unitOfWork=unitOfWork;
         _wordHasherService=wordHasherService;

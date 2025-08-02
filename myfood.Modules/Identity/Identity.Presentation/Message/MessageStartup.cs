@@ -10,14 +10,14 @@ namespace Identity.Presentation.Message;
 
 internal static class MessageStartup
 {
-    private static MessageProcessor<schoolIdentityDbContext, InboxMessage, IIntegrationEvent> _inboxmessageProcessor;
-    private static MessageProcessor<schoolIdentityDbContext, OutboxMessage, IDomainEvent> _outboxmessageProcessor;
+    private static MessageProcessor<SchoolIdentityDbContext, InboxMessage, IIntegrationEvent> _inboxmessageProcessor;
+    private static MessageProcessor<SchoolIdentityDbContext, OutboxMessage, IDomainEvent> _outboxmessageProcessor;
 
     public static async Task InitializeMessageProcessors()
     {
         var scope=IdentityCompositionRoot.BeginLifetimeScope();
-        _outboxmessageProcessor = scope.Resolve<MessageProcessor<schoolIdentityDbContext, OutboxMessage, IDomainEvent>>();
-        _inboxmessageProcessor = scope.Resolve<MessageProcessor<schoolIdentityDbContext, InboxMessage, IIntegrationEvent>>();
+        _outboxmessageProcessor = scope.Resolve<MessageProcessor<SchoolIdentityDbContext, OutboxMessage, IDomainEvent>>();
+        _inboxmessageProcessor = scope.Resolve<MessageProcessor<SchoolIdentityDbContext, InboxMessage, IIntegrationEvent>>();
 
         await _outboxmessageProcessor.StartAsync(CancellationToken.None);
         await _inboxmessageProcessor.StartAsync(CancellationToken.None);

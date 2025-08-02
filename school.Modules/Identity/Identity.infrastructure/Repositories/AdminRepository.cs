@@ -7,7 +7,7 @@ namespace Identity.infrastructure.Repositories;
 
 public class AdminRepository:BaseRepository<Admin>,IAdminRepository
 {
-    public AdminRepository(schoolIdentityDbContext context) : base(context)
+    public AdminRepository(SchoolIdentityDbContext context) : base(context)
     {
     }
 }

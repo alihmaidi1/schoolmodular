@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Identity.infrastructure.Migrations
 {
-    [DbContext(typeof(schoolIdentityDbContext))]
+    [DbContext(typeof(SchoolIdentityDbContext))]
     partial class schoolIdentityDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

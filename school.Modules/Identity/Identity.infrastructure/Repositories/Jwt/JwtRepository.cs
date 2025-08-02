@@ -13,10 +13,10 @@ namespace Identity.infrastructure.Repositories.Jwt;
 public class JwtRepository: IJwtRepository
 {
 
-    private readonly schoolIdentityDbContext _context;
+    private readonly SchoolIdentityDbContext _context;
     private readonly JwtSetting _jwtOption;
     
-    public JwtRepository(schoolIdentityDbContext context,JwtSetting setting)
+    public JwtRepository(SchoolIdentityDbContext context,JwtSetting setting)
     {
         _jwtOption = setting;
         _context=context;

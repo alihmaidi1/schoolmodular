@@ -26,8 +26,8 @@ public class IdentityStartup
     private static async Task ConfigureCompositionRoot(string connectionString,ILogger logger,JwtSetting jwtSetting)
     {
         var containerBuilder = new ContainerBuilder();
-
-        containerBuilder.RegisterModule(new DataAccessModule(connectionString,jwtSetting));
+        var loggerFactory = new Serilog.Extensions.Logging.SerilogLoggerFactory(logger);
+        containerBuilder.RegisterModule(new DataAccessModule(connectionString,jwtSetting,loggerFactory));
         containerBuilder.RegisterModule(new MediatRModule(Application.AssemblyReference.Assembly));
         containerBuilder.RegisterModule(new MessageModule());
         containerBuilder.RegisterModule(new LoggingModule(logger));

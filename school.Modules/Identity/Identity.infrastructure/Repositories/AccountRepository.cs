@@ -7,7 +7,7 @@ namespace Identity.infrastructure.Repositories;
 
 public class AccountRepository: BaseRepository<User>,IAccountRepository
 {
-    public AccountRepository(schoolIdentityDbContext context) : base(context)
+    public AccountRepository(SchoolIdentityDbContext context) : base(context)
     {
     }
 }

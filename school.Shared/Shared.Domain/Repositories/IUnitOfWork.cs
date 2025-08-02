@@ -1,12 +1,8 @@
-namespace Identity.Domain.Repository;
+namespace Shared.Domain.Repositories;
 
 public interface IUnitOfWork:IDisposable
 {
 
-    
-    IJwtRepository _jwtRepository { get; }
-    
-    IAdminRepository _adminRepository { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     Task BeginTransactionAsync();
     Task CommitTransactionAsync();
