@@ -22,8 +22,6 @@ public class LoginAdminEndPoint: ICarterModule
                     var result=await identityModule.ExecuteCommandAsync(command);
                     return result.ToActionResult();
 
-                    // var result=await sender.Send(command, cancellationToken);
-                    // return result.ToActionResult();
                 })
             .Produces<TResult<LoginAdminResponse>>(StatusCodes.Status201Created)
             .ProducesProblem(StatusCodes.Status400BadRequest)

@@ -1,5 +1,4 @@
 // using Microsoft.AspNetCore.Http;
-// using Shared.Domain.CQRS;
 //
 // namespace Identity.Application.Auth.Admin.Command.ChangePassword;
 //
@@ -11,7 +10,7 @@
 //
 // }
 //
-// public sealed class ChangePasswordCommand : ChangePasswordRequest, ICommand<IResult>
+// public sealed class ChangePasswordCommand : ChangePasswordRequest, ICommand<TResult<LoginAdminResponse>>
 // {
 //     public Guid? RequestId { get; set; }
 // }

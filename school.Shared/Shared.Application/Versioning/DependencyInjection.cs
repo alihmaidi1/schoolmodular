@@ -19,7 +19,7 @@ public static class DependencyInjection
 
 
         })
-        .AddMvc() // This is needed for controllers
+        // .AddMvc() // This is needed for controllers
         .AddApiExplorer(options =>
         {
             options.GroupNameFormat = "'v'V";

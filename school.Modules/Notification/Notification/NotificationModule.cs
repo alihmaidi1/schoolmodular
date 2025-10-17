@@ -31,11 +31,5 @@ public static class NotificationModule
 
     }
 
-    public static WebApplication UseNotificationModule(this WebApplication app)
-    {
-
-        
-        return app;
-    }
     
 }

@@ -4,6 +4,7 @@ using Shared.Domain.OperationResult;
 namespace Identity.Application.Auth.Admin.Command.Login;
 
 
+
 public class LoginAdminRequest
 {
     public string Email { get; set; }
@@ -14,3 +15,4 @@ public class LoginAdminRequest
 public sealed class LoginAdminCommand:LoginAdminRequest, ICommand<TResult<LoginAdminResponse>>
 {
 }
+
